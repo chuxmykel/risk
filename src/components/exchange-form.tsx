@@ -13,17 +13,17 @@ interface ExchangeFormProps {
 
 const ExchangeForm: React.FC<ExchangeFormProps> = () => {
   const router = useRouter();
-  const [toToken, setToToken] = useState<Token | null>(null);
-  const [fromToken, setFromToken] = useState<Token | null>(null);
+  const [baseToken, setBaseToken] = useState<Token | null>(null);
+  const [quoteToken, setQuoteToken] = useState<Token | null>(null);
 
   function setToken(tokenName: string, type: "to" | "from"): void {
     const [newSelectedToken] = supportedTokens.filter(token => token.name === tokenName);
-    type === "to" ? setToToken(newSelectedToken) : setFromToken(newSelectedToken);
+    type === "to" ? setQuoteToken(newSelectedToken) : setBaseToken(newSelectedToken);
   }
   async function handleSubmit(e: any) {
     e.preventDefault();
-    if (!toToken || !fromToken) return;
-    router.push(`/order-book/${fromToken?.address}/${toToken?.address}`);
+    if (!quoteToken || !baseToken) return;
+    router.push(`/order-book/${quoteToken?.address}/${baseToken?.address}`);
     return;
   }
 
@@ -34,7 +34,7 @@ const ExchangeForm: React.FC<ExchangeFormProps> = () => {
           <Form.Label>You pay</Form.Label>
           <TokenDropdown
             tokens={supportedTokens}
-            selectedToken={fromToken}
+            selectedToken={baseToken}
             setSelectedToken={(tokenName) => setToken(tokenName, "from")}
           />
         </Form.Group>
@@ -43,7 +43,7 @@ const ExchangeForm: React.FC<ExchangeFormProps> = () => {
           <Form.Label>You receive</Form.Label>
           <TokenDropdown
             tokens={supportedTokens}
-            selectedToken={toToken}
+            selectedToken={quoteToken}
             setSelectedToken={(tokenName) => setToken(tokenName, "to")}
           />
         </Form.Group>
@@ -51,7 +51,7 @@ const ExchangeForm: React.FC<ExchangeFormProps> = () => {
         <Button
           variant="primary"
           type="submit"
-          disabled={!toToken || !fromToken}
+          disabled={!quoteToken || !baseToken}
         >
           Submit
         </Button>

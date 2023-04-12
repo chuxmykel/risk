@@ -7,3 +7,10 @@ export type Token = {
   address: string;
 };
 
+export type Order = {
+  makerAmount: string;
+  takerAmount: string;
+  makerToken: string;
+  takerToken: string;
+};
+

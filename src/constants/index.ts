@@ -31,6 +31,18 @@ export const supportedTokens: Token[] = [
     logoURI: "https://assets.coingecko.com/coins/images/6319/thumb/USD_Coin_icon.png?1547042389",
     address: "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
   },
+  {
+    name: "Tether",
+    symbol: "USDT",
+    logoURI: "https://assets.coingecko.com/coins/images/325/thumb/Tether.png?1668148663",
+    address: "0xdac17f958d2ee523a2206206994597c13d831ec7",
+  },
+  {
+    name: "Wrapped Bitcoin",
+    symbol: "WBTC",
+    logoURI: "https://assets.coingecko.com/coins/images/7598/thumb/wrapped_bitcoin_wbtc.png?1548822744",
+    address: "0x2260fac5e5542a773aa44fbcfedf7c193bc2c599",
+  }
 ];
 
 
