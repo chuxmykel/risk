@@ -1,57 +1,86 @@
 import React from 'react'
 
 import { Order } from '@/types';
+import {
+  getActualOrderAmount,
+  getTokenDetails
+} from '@/utils';
 
 interface OrderBookTableProps {
   orders: Order[];
   type: "bid" | "ask";
+  quoteToken: string;
+  baseToken: string;
 };
 
-const OrderBookTable: React.FC<OrderBookTableProps> = ({ orders, type }) => {
+const OrderBookTable: React.FC<OrderBookTableProps> = ({ orders, type, baseToken, quoteToken }) => {
   function getPrice(order: Order) {
-    // FIXME: Check if these values need to be multiplied
-    // by the decimal parameter provided in the tokens object
-    const takerAmount = parseFloat(order.takerAmount);
-    const makerAmount = parseFloat(order.makerAmount);
-    console.log(takerAmount, "takerAmount ==========> ")
-    console.log(makerAmount, "makerAmount ==========> ")
+    const {
+      takerAmount,
+      makerAmount,
+    } = getActualOrderAmount(order);
     let price = 0;
+
     switch (type) {
+      // NOTE: price(baseTokenAmount(usdc))
+      // baseTokenAmount (usdc) / quoteTokenAmount (weth)
       case 'bid': {
         price = takerAmount / makerAmount;
         break;
       }
+
+      // NOTE: price(baseTokenAmount(usdc))
+      // 1 / (quoteTokenAmount (weth) / baseTokenAmount (usdc))
       case 'ask': {
         price = 1 / (takerAmount / makerAmount);
         break;
       }
-
-      default: {
-        break;
-      }
     }
-    return price;
+    return price.toFixed(2);
   };
+
+  function getQuantity(order: Order) {
+    const {
+      takerAmount,
+      makerAmount,
+    } = getActualOrderAmount(order);
+    const quantity = type === "bid" ? makerAmount : takerAmount;
+    return quantity.toFixed(4);
+  }
+
   return (
-    <table>
-      <thead>
-        <th>Price</th>
-        <th>Quantity</th>
-        <th>Total</th>
-      </thead>
-      <tbody>
-        {orders.map((order) => {
-          return (
-            <tr>
-              <td>{getPrice(order)}</td>
-              <td></td>
-              <td></td>
-            </tr>
-          );
-        })}
-      </tbody>
-    </table>
+    <div>
+      <h1>{type === "bid" ? "BIDS" : "ASKS"}</h1>
+      <table>
+        <thead>
+          <th>{`Price(${getTokenDetails(baseToken).symbol})`}</th>
+          <th>{`Quantity(${getTokenDetails(quoteToken).symbol})`}</th>
+          <th>{`Total(${getTokenDetails(baseToken).symbol})`}</th>
+        </thead>
+        <tbody>
+          {
+            orders
+              // To remove weird orders. Wrong way perhaps??
+              // .filter(order => parseFloat(getPrice(order)) < 10000000000)
+              .map((order) => {
+                return (
+                  <tr>
+                    <td>
+                      {getPrice(order)}
+                    </td>
+                    <td>
+                      {getQuantity(order)}
+                    </td>
+                    <td>
+                    </td>
+                  </tr>
+                );
+              })}
+        </tbody>
+      </table>
+    </div>
   )
 }
 
 export default OrderBookTable;
+

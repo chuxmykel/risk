@@ -5,14 +5,15 @@ import { Order } from "@/types";
 
 
 interface OrderBookState {
-  bids: Order[],
-  asks: Order[],
+  bids: Order[];
+  asks: Order[];
 };
 
 const OrderBook = () => {
   const router = useRouter();
   const baseUrl = "https://api.0x.org/orderbook/v1";
-  const { quoteToken, baseToken } = router.query;
+  const baseToken: string = router.query.baseToken as string;
+  const quoteToken: string = router.query.quoteToken as string;
   const [orderBook, setOrderBook] = useState<OrderBookState>({
     bids: [],
     asks: [],
@@ -27,20 +28,22 @@ const OrderBook = () => {
         asks: data.asks.records.map((record: any) => record.order),
         bids: data.bids.records.map((record: any) => record.order),
       });
-      console.log(orderBook, "order book ===============> ");
     })();
   }, []);
-  // return (<div>{JSON.stringify(orderBook)}</div>)
 
   return orderBook && (
     <div>
       <OrderBookTable
         orders={orderBook.bids}
         type="bid"
+        baseToken={baseToken}
+        quoteToken={quoteToken}
       />
       <OrderBookTable
         orders={orderBook.asks}
         type="ask"
+        baseToken={baseToken}
+        quoteToken={quoteToken}
       />
     </div>
   );
