@@ -29,7 +29,7 @@ const OrderBook = () => {
         bids: data.bids.records.map((record: any) => record.order),
       });
     })();
-  }, []);
+  }, [baseToken, quoteToken]);
 
   return orderBook && (
     <div>

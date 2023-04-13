@@ -69,7 +69,7 @@ const OrderBookTable: React.FC<OrderBookTableProps> = ({
       .map((order, idx) => {
 
         return (
-          <tr>
+          <tr key={JSON.stringify(order)}>
             <td>
               {getPrice(order)}
             </td>
@@ -85,12 +85,14 @@ const OrderBookTable: React.FC<OrderBookTableProps> = ({
     return reverse ? ordersUI.reverse() : ordersUI;
   }
 
+  // NOTE:
+  // BIDS are arranged in DESC
+  // ASKS are arranged in ASC fullscreen, DESC in comparison
+  // for BIDS, the total is cummulative from top to bottom
+  // for ASKS, the total is cummulative from top to bottom on the fullscreen, bottom to top on in comparison
+
   return (
     <div>
-      {/* BIDS are arranged in DESC */}
-      {/* ASKS are arranged in ASC fullscreen, DESC in comparation */}
-      {/* for BIDS, the total is cummulative from top to bottom */}
-      {/* for ASKS, the total is cummulative from top to bottom on the fullscreen, bottom to top on in comparation */}
       <h1>{type === "bid" ? "BIDS" : "ASKS"}</h1>
       <table className={`${type === "bid" ? "text-green-600" : "text-red-600"}`}>
         <thead>
