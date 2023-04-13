@@ -34,16 +34,17 @@ const OrderBook = () => {
   return orderBook && (
     <div>
       <OrderBookTable
-        orders={orderBook.bids}
-        type="bid"
-        baseToken={baseToken}
-        quoteToken={quoteToken}
-      />
-      <OrderBookTable
         orders={orderBook.asks}
         type="ask"
         baseToken={baseToken}
         quoteToken={quoteToken}
+      />
+      <OrderBookTable
+        orders={orderBook.bids}
+        type="bid"
+        baseToken={baseToken}
+        quoteToken={quoteToken}
+        reverse
       />
     </div>
   );
