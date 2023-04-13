@@ -1,5 +1,7 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/router";
+import useWebSocket, { ReadyState } from 'react-use-websocket';
+
 import OrderBookTable from "../../components/order-book-table";
 import { Order } from "@/types";
 
@@ -18,6 +20,31 @@ const OrderBook = () => {
     bids: [],
     asks: [],
   });
+  const [messageHistory, setMessageHistory] = useState<any[]>([]);
+  const { lastJsonMessage, readyState, sendJsonMessage } = useWebSocket("wss://api.0x.org/orderbook/v1");
+
+  const subscribe = useCallback(() => sendJsonMessage({
+    type: "subscribe",
+    channel: "orders",
+    requestId: `${quoteToken}${baseToken}`,
+  }), [quoteToken, baseToken]);
+
+  const connectionStatus = {
+    [ReadyState.CONNECTING]: 'Connecting',
+    [ReadyState.OPEN]: 'Open',
+    [ReadyState.CLOSING]: 'Closing',
+    [ReadyState.CLOSED]: 'Closed',
+    [ReadyState.UNINSTANTIATED]: 'Uninstantiated',
+  }[readyState];
+
+  useEffect(() => {
+    if (lastJsonMessage !== null) {
+      setMessageHistory((prev) => prev.concat(lastJsonMessage));
+      console.log(lastJsonMessage, "lastMessage =================> ");
+      // TODO: Updates are coming in now. How will you update the UI?
+    }
+  }, [lastJsonMessage, setMessageHistory, readyState]);
+
   useEffect(() => {
     (async () => {
       const res = await fetch(
@@ -29,7 +56,16 @@ const OrderBook = () => {
         bids: data.bids.records.map((record: any) => record.order),
       });
     })();
-  }, [baseToken, quoteToken]);
+  }, [baseToken, quoteToken, readyState]);
+
+  useEffect(() => {
+
+    if (readyState === ReadyState.OPEN) {
+      subscribe();
+    }
+
+    console.log(`The websocket is currently : ${connectionStatus}`);
+  }, [readyState]);
 
   return orderBook && (
     <div>
