@@ -20,13 +20,16 @@ const OrderBook = () => {
     bids: [],
     asks: [],
   });
-  const [messageHistory, setMessageHistory] = useState<any[]>([]);
   const { lastJsonMessage, readyState, sendJsonMessage } = useWebSocket("wss://api.0x.org/orderbook/v1");
 
   const subscribe = useCallback(() => sendJsonMessage({
     type: "subscribe",
     channel: "orders",
-    requestId: `${quoteToken}${baseToken}`,
+    requestId: `${baseToken}${quoteToken}`,
+    payload: {
+      takerToken: quoteToken,
+      makerToken: baseToken,
+    }
   }), [quoteToken, baseToken]);
 
   const connectionStatus = {
@@ -39,11 +42,11 @@ const OrderBook = () => {
 
   useEffect(() => {
     if (lastJsonMessage !== null) {
-      setMessageHistory((prev) => prev.concat(lastJsonMessage));
-      console.log(lastJsonMessage, "lastMessage =================> ");
+      // @ts-ignore
+      console.log(lastJsonMessage?.payload, "lastMessage =================> ");
       // TODO: Updates are coming in now. How will you update the UI?
     }
-  }, [lastJsonMessage, setMessageHistory, readyState]);
+  }, [lastJsonMessage, readyState]);
 
   useEffect(() => {
     (async () => {
@@ -51,9 +54,17 @@ const OrderBook = () => {
         `${baseUrl}?quoteToken=${quoteToken}&baseToken=${baseToken}`
       );
       const data = await res.json();
+      const orderMapper = (record: any): Order => {
+        const mappedRecord: Order = {
+          ...record.order,
+          ...record.metaData,
+        }
+
+        return mappedRecord;
+      };
       setOrderBook({
-        asks: data.asks.records.map((record: any) => record.order),
-        bids: data.bids.records.map((record: any) => record.order),
+        asks: data.asks.records.map(orderMapper),
+        bids: data.bids.records.map(orderMapper),
       });
     })();
   }, [baseToken, quoteToken, readyState]);

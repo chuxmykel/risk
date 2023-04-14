@@ -69,7 +69,7 @@ const OrderBookTable: React.FC<OrderBookTableProps> = ({
       .map((order, idx) => {
 
         return (
-          <tr key={JSON.stringify(order)}>
+          <tr key={order.orderHash}>
             <td>
               {getPrice(order)}
             </td>
@@ -96,9 +96,11 @@ const OrderBookTable: React.FC<OrderBookTableProps> = ({
       <h1>{type === "bid" ? "BIDS" : "ASKS"}</h1>
       <table className={`${type === "bid" ? "text-green-600" : "text-red-600"}`}>
         <thead>
-          <th>{`Price(${getTokenDetails(baseToken).symbol})`}</th>
-          <th>{`Quantity(${getTokenDetails(quoteToken).symbol})`}</th>
-          <th>{`Total(${getTokenDetails(quoteToken).symbol})`}</th>
+          <tr>
+            <th>{`Price(${getTokenDetails(baseToken).symbol})`}</th>
+            <th>{`Quantity(${getTokenDetails(quoteToken).symbol})`}</th>
+            <th>{`Total(${getTokenDetails(quoteToken).symbol})`}</th>
+          </tr>
         </thead>
         <tbody>
           {getOrdersUI()}

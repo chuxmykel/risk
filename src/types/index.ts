@@ -11,5 +11,6 @@ export type Order = {
   takerAmount: string;
   makerToken: string;
   takerToken: string;
+  orderHash: string;
 };
 
