@@ -32,14 +32,14 @@ const TokenDropdown: React.FC<TokenDropdownProps> = ({
       <>
         {showTokenMenu && (
           <div
-            className='absolute -right-1/2 top-12 bg-white border border-slate-50 w-60 z-10 p-4 rounded-lg'
+            className='absolute -right-1/2 top-12  bg-slate-100 w-60 z-10 p-4 rounded-lg'
           >
             <div className='flex flex-col gap-3 items-center'>
 
               {supportedTokens.map(token => {
                 return (
                   <div
-                    className='hover:bg-slate-100 cursor-pointer w-full flex justify-center'
+                    className='hover:bg-slate-200 cursor-pointer w-full flex justify-center'
                     onClick={() => handleClick(token.name)}
                   >
                     <TokenNameAndLogo

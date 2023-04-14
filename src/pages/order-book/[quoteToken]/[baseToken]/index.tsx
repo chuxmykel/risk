@@ -6,6 +6,7 @@ import Spinner from "react-bootstrap/Spinner";
 import OrderBookTable from "../../components/order-book-table";
 import { getTokenDetails } from "@/utils";
 import { useOrderBook } from "@/hooks";
+import Link from "next/link";
 
 
 // TEST TOKENS
@@ -58,9 +59,19 @@ const OrderBook = () => {
   }, [lastJsonMessage, readyState]);
 
 
+  if (!isLoading && orderBook.asks.length < 1) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-screen">
+        <h4 className="font-bold text-xl">
+          No orderbook data for token pair.
+        </h4>
+        <Link href={"/"}>Go Home</Link>
+      </div>
+    );
+  }
 
   return (
-    <main className="flex flex-col min-h-screen">
+    <div className="flex flex-col min-h-screen">
       {isLoading ?
         (<div className="flex items-center justify-center h-screen">
           <Spinner />
@@ -87,7 +98,7 @@ const OrderBook = () => {
             </div>
           )}
         </>)}
-    </main>
+    </div>
   );
 }
 

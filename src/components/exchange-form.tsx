@@ -24,7 +24,7 @@ const ExchangeForm: React.FC = () => {
   }
 
   return (
-    <div className='flex justify-center min-w-full'>
+    <div className='flex justify-center min-w-full text-[#272343] h-96'>
       <Form onSubmit={handleSubmit} className='flex flex-col items-center w-96'>
         <Form.Group className="mb-3 flex flex-col items-center justify-center flex-1">
           <Form.Label className='font-bold text-lg mb-4'>Base Token</Form.Label>
@@ -47,7 +47,7 @@ const ExchangeForm: React.FC = () => {
           type="submit"
           disabled={!quoteToken || !baseToken}
         >
-          Submit
+          View Order Book
         </Button>
       </Form>
     </div>
