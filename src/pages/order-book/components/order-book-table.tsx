@@ -1,4 +1,5 @@
 import React from 'react'
+import Table from 'react-bootstrap/Table';
 
 import { Order } from '@/types';
 import {
@@ -43,7 +44,7 @@ const OrderBookTable: React.FC<OrderBookTableProps> = ({
         break;
       }
     }
-    return price.toFixed(2);
+    return price.toString();
   };
 
   function getQuantity(order: Order) {
@@ -52,32 +53,33 @@ const OrderBookTable: React.FC<OrderBookTableProps> = ({
       makerAmount,
     } = getActualOrderAmount(order);
     const quantity = type === "bid" ? makerAmount : takerAmount;
-    return quantity.toFixed(4);
+    return quantity.toString();
   }
 
-  function getCurrentTotal(order: Order, orderIndex: number) {
+  function getCurrentTotal(orderIndex: number) {
     let total = 0;
     for (let i = 0; i <= orderIndex; i++) {
       total += parseFloat(getQuantity(orders[i]));
     }
-    return total.toFixed(2);
+    return total.toString();
   }
 
   function getOrdersUI() {
     const ordersUI = orders
-      .filter(order => parseFloat(getQuantity(order)) > 0.00001)
       .map((order, idx) => {
 
         return (
           <tr key={order.orderHash}>
-            <td>
-              {getPrice(order)}
+            <td
+              className={`${type === "bid" ? "text-green-600" : "text-red-600"} w-full`}
+            >
+              {parseFloat(getPrice(order)).toFixed(2)}
             </td>
             <td>
               {getQuantity(order)}
             </td>
             <td>
-              {getCurrentTotal(order, idx)}
+              {getCurrentTotal(idx)}
             </td>
           </tr>
         );
@@ -92,20 +94,25 @@ const OrderBookTable: React.FC<OrderBookTableProps> = ({
   // for ASKS, the total is cummulative from top to bottom on the fullscreen, bottom to top on in comparison
 
   return (
-    <div>
-      <h1>{type === "bid" ? "BIDS" : "ASKS"}</h1>
-      <table className={`${type === "bid" ? "text-green-600" : "text-red-600"}`}>
+    <div className='w-full'>
+      <Table hover variant="dark">
         <thead>
           <tr>
-            <th>{`Price(${getTokenDetails(baseToken).symbol})`}</th>
-            <th>{`Quantity(${getTokenDetails(quoteToken).symbol})`}</th>
-            <th>{`Total(${getTokenDetails(quoteToken).symbol})`}</th>
+            <th>
+              {`Price(${getTokenDetails(baseToken).symbol})`}
+            </th>
+            <th>
+              {`Quantity(${getTokenDetails(quoteToken).symbol})`}
+            </th>
+            <th>
+              {`Total(${getTokenDetails(quoteToken).symbol})`}
+            </th>
           </tr>
         </thead>
         <tbody>
           {getOrdersUI()}
         </tbody>
-      </table>
+      </Table>
     </div>
   )
 }

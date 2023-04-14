@@ -28,10 +28,10 @@ const ExchangeForm: React.FC<ExchangeFormProps> = () => {
   }
 
   return (
-    <div className='border-2 border-red-300'>
-      <Form onSubmit={handleSubmit}>
-        <Form.Group className="mb-3">
-          <Form.Label>Base Token</Form.Label>
+    <div className='flex justify-center min-w-full'>
+      <Form onSubmit={handleSubmit} className='flex flex-col items-center w-96'>
+        <Form.Group className="mb-3 flex flex-col items-center justify-center flex-1">
+          <Form.Label className='font-bold text-lg mb-4'>Base Token</Form.Label>
           <TokenDropdown
             tokens={supportedTokens}
             selectedToken={baseToken}
@@ -39,8 +39,8 @@ const ExchangeForm: React.FC<ExchangeFormProps> = () => {
           />
         </Form.Group>
 
-        <Form.Group className="mb-3">
-          <Form.Label>Quote Token</Form.Label>
+        <Form.Group className="mb-3 flex flex-col items-center justify-center flex-1">
+          <Form.Label className='font-bold text-lg mb-4'>Quote Token</Form.Label>
           <TokenDropdown
             tokens={supportedTokens}
             selectedToken={quoteToken}
