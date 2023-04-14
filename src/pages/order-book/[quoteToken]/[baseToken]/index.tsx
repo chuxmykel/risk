@@ -14,7 +14,8 @@ interface OrderBookState {
 
 const OrderBook = () => {
   const router = useRouter();
-  const baseUrl = "https://api.0x.org/orderbook/v1";
+  const baseURL = "https://api.0x.org/orderbook/v1";
+  const websocketURL = "wss://api.0x.org/orderbook/v1";
   const baseToken: string = router.query.baseToken as string;
   const quoteToken: string = router.query.quoteToken as string;
   // const baseToken = "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48";
@@ -23,7 +24,39 @@ const OrderBook = () => {
     bids: [],
     asks: [],
   });
-  const { lastJsonMessage, readyState, sendJsonMessage } = useWebSocket("wss://api.0x.org/orderbook/v1");
+
+  useEffect(() => {
+    (async () => {
+      const res = await fetch(
+        `${baseURL}?quoteToken=${quoteToken}&baseToken=${baseToken}`
+      );
+      const data = await res.json();
+      const orderMapper = (record: any): Order => {
+        const mappedRecord: Order = {
+          ...record.order,
+          ...record.metaData,
+        }
+
+        return mappedRecord;
+      };
+      const newOrderBook = {
+        asks: data.asks.records.map(orderMapper),
+        bids: data.bids.records.map(orderMapper),
+      };
+
+      // Slice the array to make sure the order book is symmetrical.
+      const minLength = Math.min(newOrderBook.bids.length, newOrderBook.asks.length);
+      newOrderBook.asks = newOrderBook.asks.slice(0, minLength);
+      newOrderBook.bids = newOrderBook.bids.slice(0, minLength);
+      setOrderBook(newOrderBook);
+    })();
+  }, [baseToken, quoteToken]);
+
+  const {
+    lastJsonMessage,
+    readyState,
+    sendJsonMessage,
+  } = useWebSocket(websocketURL);
 
   const subscribe = useCallback(() => sendJsonMessage({
     type: "subscribe",
@@ -51,32 +84,6 @@ const OrderBook = () => {
     }
   }, [lastJsonMessage, readyState]);
 
-  useEffect(() => {
-    (async () => {
-      const res = await fetch(
-        `${baseUrl}?quoteToken=${quoteToken}&baseToken=${baseToken}`
-      );
-      const data = await res.json();
-      const orderMapper = (record: any): Order => {
-        const mappedRecord: Order = {
-          ...record.order,
-          ...record.metaData,
-        }
-
-        return mappedRecord;
-      };
-      const newOrderBook = {
-        asks: data.asks.records.map(orderMapper),
-        bids: data.bids.records.map(orderMapper),
-      };
-
-      // Slice the array to make sure the order book is symmetrical.
-      const minLength = Math.min(newOrderBook.bids.length, newOrderBook.asks.length);
-      newOrderBook.asks = newOrderBook.asks.slice(0, minLength);
-      newOrderBook.bids = newOrderBook.bids.slice(0, minLength);
-      setOrderBook(newOrderBook);
-    })();
-  }, [baseToken, quoteToken, readyState]);
 
   useEffect(() => {
 
