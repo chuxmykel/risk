@@ -3,17 +3,16 @@ import Image from 'next/image'
 import Button from 'react-bootstrap/Button';
 
 import { Token } from '@/types';
+import { supportedTokens } from '@/constants';
 
 interface TokenDropdownProps {
   selectedToken: Token | null;
   setSelectedToken: (token: string) => void;
-  tokens: Token[],
 }
 
 const TokenDropdown: React.FC<TokenDropdownProps> = ({
   selectedToken,
   setSelectedToken,
-  tokens
 }) => {
   const [showTokenMenu, setShowTokenMenu] = useState<boolean>(false);
   function handleClick(tokenName: string) {
@@ -37,7 +36,7 @@ const TokenDropdown: React.FC<TokenDropdownProps> = ({
           >
             <div className='flex flex-col gap-3 items-center'>
 
-              {tokens.map(token => {
+              {supportedTokens.map(token => {
                 return (
                   <div
                     className='hover:bg-slate-100 cursor-pointer w-full flex justify-center'

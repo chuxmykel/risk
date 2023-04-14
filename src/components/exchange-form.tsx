@@ -7,11 +7,7 @@ import TokenDropdown from './token-dropdown';
 import { Token } from '@/types';
 import { supportedTokens } from '@/constants';
 
-interface ExchangeFormProps {
-  // tokens: Token[];
-}
-
-const ExchangeForm: React.FC<ExchangeFormProps> = () => {
+const ExchangeForm: React.FC = () => {
   const router = useRouter();
   const [baseToken, setBaseToken] = useState<Token | null>(null);
   const [quoteToken, setQuoteToken] = useState<Token | null>(null);
@@ -33,7 +29,6 @@ const ExchangeForm: React.FC<ExchangeFormProps> = () => {
         <Form.Group className="mb-3 flex flex-col items-center justify-center flex-1">
           <Form.Label className='font-bold text-lg mb-4'>Base Token</Form.Label>
           <TokenDropdown
-            tokens={supportedTokens}
             selectedToken={baseToken}
             setSelectedToken={(tokenName) => setToken(tokenName, "from")}
           />
@@ -42,7 +37,6 @@ const ExchangeForm: React.FC<ExchangeFormProps> = () => {
         <Form.Group className="mb-3 flex flex-col items-center justify-center flex-1">
           <Form.Label className='font-bold text-lg mb-4'>Quote Token</Form.Label>
           <TokenDropdown
-            tokens={supportedTokens}
             selectedToken={quoteToken}
             setSelectedToken={(tokenName) => setToken(tokenName, "to")}
           />
