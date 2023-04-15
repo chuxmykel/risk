@@ -57,8 +57,7 @@ const OrderBook = () => {
 
   if (!isLoading && orderBook.asks.length < 1) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-screen">
-
+      <div className="flex flex-col items-center justify-center h-full">
         <div className="flex justify-center py-5">
           <h1>{quoteToken && `${getTokenDetails(quoteToken).symbol}/${getTokenDetails(baseToken).symbol}`}</h1>
         </div>
@@ -71,32 +70,37 @@ const OrderBook = () => {
   }
 
   return (
-    <div className="flex flex-col min-h-screen">
+    <div className="flex flex-col items-center h-full w-full">
       {isLoading ?
-        (<div className="flex items-center justify-center h-screen">
-          <Spinner />
-        </div>) :
-        (<>
-          <div className="flex justify-center py-5">
-            <h1>{`${getTokenDetails(quoteToken).symbol}/${getTokenDetails(baseToken).symbol}`}</h1>
+        (
+          <div className="flex items-center justify-center h-full">
+            <Spinner />
           </div>
-          {orderBook && (
-            <div className="flex flex-1 gap-10 justify-center px-40">
-              <OrderBookTable
-                orders={orderBook.bids}
-                type="bid"
-                baseToken={baseToken}
-                quoteToken={quoteToken}
-              />
-              <OrderBookTable
-                orders={orderBook.asks}
-                type="ask"
-                baseToken={baseToken}
-                quoteToken={quoteToken}
-              />
+        ) : (
+          <>
+            <div className="flex justify-center py-5">
+              <h1>{`${getTokenDetails(quoteToken).symbol}/${getTokenDetails(baseToken).symbol}`}</h1>
             </div>
-          )}
-        </>)}
+
+            {orderBook && (
+              <div className="flex gap-10 justify-between w-3/4">
+                <OrderBookTable
+                  orders={orderBook.bids}
+                  type="bid"
+                  baseToken={baseToken}
+                  quoteToken={quoteToken}
+                />
+                <OrderBookTable
+                  orders={orderBook.asks}
+                  type="ask"
+                  baseToken={baseToken}
+                  quoteToken={quoteToken}
+                />
+              </div>
+            )}
+          </>
+        )
+      }
     </div>
   );
 }

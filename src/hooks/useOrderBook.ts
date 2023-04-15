@@ -36,10 +36,6 @@ export default function useOrderBook(baseToken: string, quoteToken: string) {
           bids: data.bids.records.map(orderMapper),
         };
 
-        // Slice the array to make sure the order book is symmetrical.
-        const minLength = Math.min(newOrderBook.bids.length, newOrderBook.asks.length);
-        newOrderBook.asks = newOrderBook.asks.slice(0, minLength);
-        newOrderBook.bids = newOrderBook.bids.slice(0, minLength);
         setOrderBook(newOrderBook);
       } catch (error) {
         // TODO: Handle Error

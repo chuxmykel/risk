@@ -83,6 +83,8 @@ export function getParsedOrderBookData(orders: Order[], type: OrderType) {
     };
   });
 
+  const orderQuantityTotal = orderBookData[orderBookData.length - 1].total;
+
 
   // Total should be cummulative in the reverse order;
   return orderBookData.map((datum, idx) => {
@@ -90,6 +92,22 @@ export function getParsedOrderBookData(orders: Order[], type: OrderType) {
       ...datum,
       total: [...orderBookData].reverse()[idx].total,
     };
+  }).map(datum => {
+    const percentage = Math.ceil(((parseFloat(datum.total) / parseFloat(orderQuantityTotal))) * 100);
+    return {
+      ...datum,
+      quantityPercentage: getNearestMultipleOfFive(percentage).toString(),
+    };
   }).reverse();
 }
 
+function getNearestMultipleOfFive(value: number) {
+  if (value >= 100) return 100;
+  if (value < 5) return 5;
+  const remainder = value % 5;
+  if (remainder > 5) {
+    return value - remainder;
+  } else {
+    return value + (10 - remainder);
+  }
+}
