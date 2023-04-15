@@ -58,6 +58,10 @@ const OrderBook = () => {
   if (!isLoading && orderBook.asks.length < 1) {
     return (
       <div className="flex flex-col items-center justify-center min-h-screen">
+
+        <div className="flex justify-center py-5">
+          <h1>{quoteToken && `${getTokenDetails(quoteToken).symbol}/${getTokenDetails(baseToken).symbol}`}</h1>
+        </div>
         <h4 className="font-bold text-xl">
           No orderbook data for token pair.
         </h4>
