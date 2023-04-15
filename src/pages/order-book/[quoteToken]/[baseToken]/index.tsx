@@ -50,7 +50,6 @@ const OrderBook = () => {
     if (lastJsonMessage !== null) {
       // @ts-ignore
       console.log(lastJsonMessage?.payload, "lastMessage =================> ");
-      // TODO: Updates are coming in now. How will you update the UI?
     }
   }, [lastJsonMessage, readyState]);
 
