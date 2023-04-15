@@ -66,16 +66,23 @@ function getCurrentTotal(
   return total.toString();
 }
 
+function getDecimalLength(property: number): number {
+  return property > 1 ? 2 : 9;
+}
+
 export function getParsedOrderBookData(orders: Order[], type: OrderType) {
   const orderBookData = orders.map((order, idx) => {
-    // FIXME:: if any value is greater than 1 it should be to fixed 2, else it should be to fixed 9
+    const price = parseFloat(getPrice(order, type));
+    const quantity = parseFloat(getQuantity(order, type));
+    const total = parseFloat(getCurrentTotal(idx, orders, type));
     return {
-      price: parseFloat(getPrice(order, type)).toFixed(9),
-      quantity: parseFloat(getQuantity(order, type)).toFixed(6),
-      total: parseFloat(getCurrentTotal(idx, orders, type)).toFixed(6),
+      price: price.toFixed(getDecimalLength(price)),
+      quantity: quantity.toFixed(getDecimalLength(quantity)),
+      total: total.toFixed(getDecimalLength(total)),
       hash: order.orderHash,
     };
   });
+
 
   // Total should be cummulative in the reverse order;
   return orderBookData.map((datum, idx) => {
