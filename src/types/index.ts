@@ -14,3 +14,5 @@ export type Order = {
   orderHash: string;
 };
 
+export type OrderType = "ask" | "bid";
+
