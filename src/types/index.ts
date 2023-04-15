@@ -16,3 +16,11 @@ export type Order = {
 
 export type OrderType = "ask" | "bid";
 
+export type ParsedOrderBookData = {
+  price: string;
+  quantity: string;
+  total: string;
+  hash: string;
+  quantityPercentage: string;
+};
+

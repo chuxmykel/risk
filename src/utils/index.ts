@@ -1,5 +1,5 @@
 import { supportedTokens } from "@/constants";
-import { Order, OrderType, Token } from "@/types";
+import { Order, OrderType, ParsedOrderBookData, Token } from "@/types";
 
 export function getTokenDetails(tokenAddress: string): Token {
   // Token will always be found since we have a constant list of supportedTokens
@@ -70,7 +70,7 @@ function getDecimalLength(property: number): number {
   return property > 1 ? 2 : 9;
 }
 
-export function getParsedOrderBookData(orders: Order[], type: OrderType) {
+export function getParsedOrderBookData(orders: Order[], type: OrderType): ParsedOrderBookData[] {
   const orderBookData = orders.map((order, idx) => {
     const price = parseFloat(getPrice(order, type));
     const quantity = parseFloat(getQuantity(order, type));

@@ -1,10 +1,10 @@
-import { useCallback, useEffect } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import useWebSocket, { ReadyState } from 'react-use-websocket';
 import Spinner from "react-bootstrap/Spinner";
 
 import OrderBookTable from "../../components/order-book-table";
-import { getTokenDetails } from "@/utils";
+import { getParsedOrderBookData, getTokenDetails } from "@/utils";
 import { useOrderBook } from "@/hooks";
 import Link from "next/link";
 
@@ -13,24 +13,31 @@ const OrderBook = () => {
   const websocketURL = "wss://api.0x.org/orderbook/v1";
   const baseToken: string = router.query.baseToken as string;
   const quoteToken: string = router.query.quoteToken as string;
+  const [tokenSymbols, setTokenSymbols] = useState({
+    baseToken: "",
+    quoteToken: "",
+  });
   const { orderBook, isLoading } = useOrderBook(baseToken, quoteToken);
   const {
     lastJsonMessage,
     readyState,
     sendJsonMessage,
   } = useWebSocket(websocketURL);
-  const wsMessage = {
-    type: "subscribe",
-    channel: "orders",
-    requestId: `${baseToken}${quoteToken}`,
-    payload: {
-      takerToken: quoteToken, makerToken: baseToken,
-    }
-  };
   const subscribe = useCallback(
-    () => sendJsonMessage(wsMessage),
-    [quoteToken, baseToken]
+    () => {
+      const wsMessage = {
+        type: "subscribe",
+        channel: "orders",
+        requestId: `${baseToken}${quoteToken}`,
+        payload: {
+          takerToken: quoteToken, makerToken: baseToken,
+        }
+      };
+      sendJsonMessage(wsMessage);
+    },
+    [sendJsonMessage, baseToken, quoteToken]
   );
+
   const connectionStatus = {
     [ReadyState.CONNECTING]: 'Connecting',
     [ReadyState.OPEN]: 'Open',
@@ -40,11 +47,16 @@ const OrderBook = () => {
   }[readyState];
 
   useEffect(() => {
+
     if (readyState === ReadyState.OPEN) {
       subscribe();
     }
+    setTokenSymbols({
+      baseToken: getTokenDetails(baseToken)?.symbol,
+      quoteToken: getTokenDetails(quoteToken)?.symbol,
+    });
     // console.log(`The websocket is currently : ${connectionStatus}`);
-  }, [readyState]);
+  }, [readyState, subscribe, baseToken, quoteToken]);
 
   useEffect(() => {
     if (lastJsonMessage !== null) {
@@ -58,7 +70,7 @@ const OrderBook = () => {
     return (
       <div className="flex flex-col items-center justify-center h-full">
         <div className="flex justify-center py-5">
-          <h1>{quoteToken && `${getTokenDetails(quoteToken).symbol}/${getTokenDetails(baseToken).symbol}`}</h1>
+          <h1>{quoteToken && `${tokenSymbols.quoteToken}/${tokenSymbols.baseToken}`}</h1>
         </div>
         <h4 className="font-bold text-xl">
           No orderbook data for token pair.
@@ -78,22 +90,22 @@ const OrderBook = () => {
         ) : (
           <>
             <div className="flex justify-center py-5">
-              <h1>{`${getTokenDetails(quoteToken).symbol}/${getTokenDetails(baseToken).symbol}`}</h1>
+              <h1>{`${tokenSymbols.quoteToken}/${tokenSymbols.baseToken}`}</h1>
             </div>
 
             {orderBook && (
               <div className="flex gap-10 justify-between w-3/4">
                 <OrderBookTable
-                  orders={orderBook.bids}
+                  orders={getParsedOrderBookData(orderBook.bids, "bid")}
                   type="bid"
-                  baseToken={baseToken}
-                  quoteToken={quoteToken}
+                  baseToken={tokenSymbols.baseToken}
+                  quoteToken={tokenSymbols.quoteToken}
                 />
                 <OrderBookTable
-                  orders={orderBook.asks}
+                  orders={getParsedOrderBookData(orderBook.asks, "ask")}
                   type="ask"
-                  baseToken={baseToken}
-                  quoteToken={quoteToken}
+                  baseToken={tokenSymbols.baseToken}
+                  quoteToken={tokenSymbols.quoteToken}
                 />
               </div>
             )}

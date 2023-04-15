@@ -1,13 +1,9 @@
 import React from 'react'
 
-import { Order, OrderType } from '@/types';
-import {
-  getParsedOrderBookData,
-  getTokenDetails
-} from '@/utils';
+import { OrderType } from '@/types';
 
 interface OrderBookTableProps {
-  orders: Order[];
+  orders: any;
   type: OrderType;
   quoteToken: string;
   baseToken: string;
@@ -20,9 +16,9 @@ const OrderBookTable: React.FC<OrderBookTableProps> = ({
   quoteToken,
 }) => {
   const headers = [
-    <TableData value={`Price(${getTokenDetails(baseToken).symbol})`} key={1} />,
-    <TableData value={`Quantity(${getTokenDetails(quoteToken).symbol})`} key={2} />,
-    <TableData value={`Total(${getTokenDetails(quoteToken).symbol})`} key={3} />,
+    <TableData value={`Price(${baseToken})`} key={1} />,
+    <TableData value={`Quantity(${quoteToken})`} key={2} />,
+    <TableData value={`Total(${quoteToken})`} key={3} />,
   ];
   return (
     <div className='relative w-full'>
@@ -34,8 +30,8 @@ const OrderBookTable: React.FC<OrderBookTableProps> = ({
 
       <>
         {
-          getParsedOrderBookData(orders, type)
-            .map(order => {
+          orders
+            ?.map((order: any) => {
               const data = [
                 <TableData
                   value={order.price}
