@@ -12,9 +12,9 @@ const ExchangeForm: React.FC = () => {
   const [baseToken, setBaseToken] = useState<Token | null>(null);
   const [quoteToken, setQuoteToken] = useState<Token | null>(null);
 
-  function setToken(tokenName: string, type: "to" | "from"): void {
+  function setToken(tokenName: string, type: "quote" | "base"): void {
     const [newSelectedToken] = supportedTokens.filter(token => token.name === tokenName);
-    type === "to" ? setQuoteToken(newSelectedToken) : setBaseToken(newSelectedToken);
+    type === "quote" ? setQuoteToken(newSelectedToken) : setBaseToken(newSelectedToken);
   }
   async function handleSubmit(e: any) {
     e.preventDefault();
@@ -30,7 +30,7 @@ const ExchangeForm: React.FC = () => {
           <Form.Label className='font-bold text-lg mb-4'>Base Token</Form.Label>
           <TokenDropdown
             selectedToken={baseToken}
-            setSelectedToken={(tokenName) => setToken(tokenName, "from")}
+            setSelectedToken={(tokenName) => setToken(tokenName, "base")}
           />
         </Form.Group>
 
@@ -38,7 +38,7 @@ const ExchangeForm: React.FC = () => {
           <Form.Label className='font-bold text-lg mb-4'>Quote Token</Form.Label>
           <TokenDropdown
             selectedToken={quoteToken}
-            setSelectedToken={(tokenName) => setToken(tokenName, "to")}
+            setSelectedToken={(tokenName) => setToken(tokenName, "quote")}
           />
         </Form.Group>
 
