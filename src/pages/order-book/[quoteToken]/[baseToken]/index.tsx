@@ -43,13 +43,13 @@ const OrderBook = () => {
     if (readyState === ReadyState.OPEN) {
       subscribe();
     }
-    console.log(`The websocket is currently : ${connectionStatus}`);
+    // console.log(`The websocket is currently : ${connectionStatus}`);
   }, [readyState]);
 
   useEffect(() => {
     if (lastJsonMessage !== null) {
       // @ts-ignore
-      console.log(lastJsonMessage?.payload, "lastMessage =================> ");
+      // console.log(lastJsonMessage?.payload, "lastMessage =================> ");
     }
   }, [lastJsonMessage, readyState]);
 
