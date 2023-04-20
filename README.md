@@ -10,6 +10,8 @@ Select the token pairs you want to get the order book for and once you submit, y
 
 ## TODO
 
-[] Clean up UI.
-[] Subscribe to orderbook webhook to give realtime updates.
-[] Support more tokens.
+- [ ] Clean up UI.
+
+- [ ] Subscribe to orderbook webhook to give realtime updates.
+
+- [ ] Support more tokens.
